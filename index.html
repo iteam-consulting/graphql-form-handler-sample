@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+  </head>
+  <body>
+    <form id="data">
+      Some stuff
+      <input type="text" name="input1">
+      <input type="text" name="input2">
+      <button type="submit">Submit</button>
+    </form>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script>
+      $(function() {
+        $('#data').on('submit', function(e) {
+          e.preventDefault();
+
+          // Make the args
+          const pairs = $('#data').children('input').map((idx, el) =>
+            `{key: "${el.getAttribute('name')}", value: "${$(el).val()}"}`);
+          
+          $.ajax('/graphql', {
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify({
+              query: `mutation emailForm { formHandler(form: [${pairs.toArray()}]){ success }}`})
+            })
+          }); 
+      });
+    </script>
+  </body>
+</html>
